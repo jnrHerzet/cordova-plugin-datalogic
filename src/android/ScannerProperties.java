@@ -1,42 +1,16 @@
 package com.datalogic.cordova.decode.configuration;
 
-import android.util.Log;
+import com.datalogic.decode.BarcodeManager;
+import com.datalogic.device.configuration.BooleanProperty;
+import com.datalogic.device.configuration.ConfigException;
+import com.datalogic.device.configuration.NumericProperty;
+import com.datalogic.device.configuration.PropertyGroup;
 
-import org.apache.cordova.*;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.datalogic.decode.BarcodeManager;
-import com.datalogic.decode.DecodeException;
-import com.datalogic.decode.configuration.IntentDeliveryMode;
-import com.datalogic.decode.configuration.IntentWedge;
-import com.datalogic.device.ErrorManager;
-import com.datalogic.device.configuration.BooleanProperty;
-import com.datalogic.device.configuration.CharacterProperty;
-import com.datalogic.device.configuration.ConfigException;
-import com.datalogic.device.configuration.EnumProperty;
-import com.datalogic.device.configuration.NumericProperty;
-import com.datalogic.device.configuration.TextProperty;
-import com.datalogic.device.configuration.PropertyGroup;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonParser;
-
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 
 
 public class ScannerProperties extends CordovaPlugin{
@@ -74,7 +48,7 @@ public class ScannerProperties extends CordovaPlugin{
 
             cfg.put("aztec", (new JSONObject()).put("enable", sp.aztec.enable.get()).put("supported", sp.aztec.isSupported()));
             cfg.put("codabar", (new JSONObject()).put("enable", sp.codabar.enable.get()).put("supported", sp.codabar.isSupported()));
-            cfg.put("code128", (new JSONObject()).put("enable", sp.code128.enable.get()).put("supported", sp.code128.isSupported()));
+            cfg.put("code128", (new JSONObject()).put("enable", sp.code128.enable.get()).put("supported", sp.code128.isSupported()).put("length2", sp.code128.Length2.get()));
             cfg.put("code39", (new JSONObject()).put("enable", sp.code39.enable.get()).put("supported", sp.code39.isSupported()));
             cfg.put("code93", (new JSONObject()).put("enable", sp.code93.enable.get()).put("supported", sp.code93.isSupported()));
             cfg.put("composite", (new JSONObject()).put("enable", sp.composite.enable.get()).put("supported", sp.composite.isSupported()));
@@ -135,6 +109,7 @@ public class ScannerProperties extends CordovaPlugin{
             propSetEnable(cfg.aztec, cfg.aztec.enable, all, "aztec");
             propSetEnable(cfg.codabar, cfg.codabar.enable, all, "codabar");
             propSetEnable(cfg.code128, cfg.code128.enable, all, "code128");
+            setLength2(cfg.code128.Length2, all, "code128");
             propSetEnable(cfg.code39, cfg.code39.enable, all, "code39");
             propSetEnable(cfg.code93, cfg.code93.enable, all, "code93");
             propSetEnable(cfg.composite, cfg.composite.enable, all, "composite");
@@ -201,4 +176,13 @@ public class ScannerProperties extends CordovaPlugin{
             en.set(all.getJSONObject(key).getBoolean("enable"));
         }
     }
+
+    void setLength2(NumericProperty length2, JSONObject all,String key) throws JSONException {
+	    int length2Value = all.getJSONObject(key).optInt("length2");
+	    if(length2Value > 0){
+            length2.set(length2Value);
+        }
+    }
+
+
 }
